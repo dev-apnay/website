@@ -94,3 +94,5 @@ h1 { font-size: clamp(40px, 6vw, 64px); letter-spacing: -1px; }
 
 .prose { max-width: 680px; padding-top: 24px; padding-bottom: 56px; }
 .prose h1 { font-size: 44px; }
+
+h1 .pink { color: var(--accent); }
