@@ -42,7 +42,10 @@
 </main>
 <script>
 // Shows the privacy note in the language chosen on the waitlist page.
+// Off for now: English only at launch (decided 10 Nov). Delete the next line to turn translations back on.
+const TRANSLATIONS_ON = false;
 (async () => {
+  if (!TRANSLATIONS_ON) return;
   const RTL = ['ur', 'ar', 'pa-Arab', 'ps', 'fa'];
   let code = new URLSearchParams(location.search).get('lang');
   try { code = code || localStorage.getItem('apnay.lang'); } catch { /* private mode */ }

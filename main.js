@@ -720,9 +720,8 @@ async function start() {
 }
 
 (async () => {
-  buildMenus();
-  const wanted = params.get('lang') || store.get();
-  await setLang(wanted && supported(wanted) ? wanted : 'en');
+  // English only at launch (decided 10 Nov). The translations stay in i18n/ for later; the menu is gone.
+  await setLang('en');
   buildStates();
   start();
 })();
