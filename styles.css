@@ -1,4 +1,4 @@
-/* Apnay waitlist — design package WL3a (Design, 8 Nov 2026). Phone first; one column on every width. */
+/* Apnay waitlist — design package WL3a (Design, 8 Nov 2026), WL3k phone flow, WL3l desktop (10 Nov 2026). Phone first. */
 @font-face { font-family: "Bricolage Grotesque"; font-weight: 600; font-display: swap; src: url(fonts/bricolage-grotesque-latin-600-normal.woff2) format("woff2"); }
 @font-face { font-family: "Bricolage Grotesque"; font-weight: 800; font-display: swap; src: url(fonts/bricolage-grotesque-latin-800-normal.woff2) format("woff2"); }
 @font-face { font-family: "DM Sans"; font-weight: 400; font-display: swap; src: url(fonts/dm-sans-latin-400-normal.woff2) format("woff2"); }
@@ -113,21 +113,35 @@ footer a { color: var(--grey); font-weight: 400; }
 
 @media (min-width: 400px) { .pair { grid-template-columns: 1fr 1fr; } }
 
-/* ---- DESKTOP (proposed by Design, D1–D4; not approved yet). Preview with ?layout=desktop ---- */
+/* Phones: the headline belongs to the form; later steps carry their own small top bar. */
+body[data-step] #top { display: none; }
+
+/* ---- DESKTOP, 960 px and wider (WL3l, WD1–WD5): a pink panel on the left with the logo and headline that stays on
+   every step (only the line under the headline changes); each step's content in a column on the right. ---- */
 @media (min-width: 960px) {
-  html.desktop main { max-width: none; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 0; min-height: 100vh; padding: 0; }
-  html.desktop #top { grid-row: 1 / span 2; align-self: start; position: sticky; top: 0; height: 100vh; background: var(--tint); padding: 48px 72px; display: flex; flex-direction: column; }
-  html.desktop #top .logo .name { font-size: 30px; }
-  html.desktop #top .logo .tag { font-size: 12px; margin-top: 8px; }
-  html.desktop #top .hero { margin: auto 0; }
-  html.desktop #top .invited { background: #fff; }
-  html.desktop #top h1 { font-size: clamp(44px, 4vw, 60px); margin: 0 0 20px; max-width: none; }
-  html.desktop #top h1 em { display: block; }
-  html.desktop #top .lede { max-width: 30ch; text-wrap: pretty; font-size: 18px; }
-  html.desktop form { padding: 72px 72px 32px; max-width: 620px; width: 100%; margin-top: 0; }
-  html.desktop footer { grid-column: 2; padding: 0 72px 40px; margin-top: 0; }
-  html.desktop .done { grid-column: 1 / -1; width: 100%; max-width: 520px; margin: 0 auto; padding: 56px 0 24px; }
-  html.desktop #top[hidden] ~ footer { grid-column: 1 / -1; justify-content: center; padding-bottom: 40px; }
+  main { max-width: none; margin: 0; padding: 0 0 0 45.5%; min-height: 100vh; }
+  [dir=rtl] main { padding: 0 45.5% 0 0; }
+  #top, body[data-step] #top { display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; inset-inline-start: 0; width: 45.5%;
+    background: var(--tint); padding: 52px 72px; overflow-y: auto; }
+  #top .logo .name { font-size: 30px; }
+  #top .logo .tag { font-size: 12px; margin-top: 8px; }
+  #top .hero { margin: auto 0; padding-bottom: 52px; }
+  #top h1 { font-size: clamp(44px, 4vw, 60px); margin: 0 0 22px; }
+  #top h1 em { display: block; }
+  #top .lede { max-width: 372px; text-wrap: pretty; }
+  #top .invited { background: #fff; }
+  #top .lang-switch { background: transparent; }
+  main > :not(#top) { max-width: 620px; padding-left: 72px; padding-right: 72px; }
+  .lang-other { margin: 24px 0 0; }
+  form#join { margin-top: 0; padding-top: 64px; }
+  form#join h2 { font-size: 22px; }
+  .names { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+  .done > .topbar, .about > .topbar, .unsubscribed > .topbar { display: none; }
+  .done, .about, .unsubscribed { padding-top: 64px; }
+  .done-title, .unsubscribed h1 { font-size: 36px; margin-top: 0; }
+  .about .confirmed-pill { margin-top: 0; }
+  .about h1 { font-size: 32px; }
+  footer { margin-top: 48px; padding-bottom: 40px; }
 }
 
 /* privacy page */
@@ -175,6 +189,7 @@ input::placeholder { color: #a39ca6; }
 .pictures { margin-top: 20px; }
 .pick-label { font-weight: 600; font-size: 13px; margin: 0 0 10px; }
 .picture-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.picture-grid.three { grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .picture { padding: 0; border: 3px solid transparent; border-radius: 16px; background: none; cursor: pointer; line-height: 0; }
 .picture img { width: 100%; border-radius: 12px; display: block; }
 .picture.picked { border-color: var(--brand); }

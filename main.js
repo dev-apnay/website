@@ -37,6 +37,11 @@ const EN = {
   changeLanguage: 'Change language',
   h1a: 'Done swiping?', h1b: 'Ready for a real recommendation?',
   lede: "Leave your details and you'll hear before anyone else.", invited: 'A friend saved you a place',
+  // desktop: the line under the headline on the later steps (WL3l)
+  ledeInbox: 'Almost there. Check your inbox to confirm.',
+  ledeAboutConfirmed: "You're confirmed. One last question, and it's optional.",
+  ledeAbout: "You're on the list. One last question, and it's optional.",
+  ledeDone: "You're on the list. Share your link to move up.",
   formTitle: 'Join the waitlist', whoLegend: 'Who are you signing up for?',
   self: 'Myself', selfSub: "I'm looking to get married.", family: 'Someone I care about', familySub: 'A son, daughter, sister, friend…',
   firstName: 'First name', lastName: 'Last name', email: 'Email', phone: 'Phone or WhatsApp', optional: '(optional)', code: 'Code',
@@ -98,7 +103,6 @@ let errorKey = null; // the error on screen, kept as a key so it can be re-trans
 let view = null; // { body, email, via } of the screen after signing up, for re-translating
 let picked = 0; // which share picture is chosen
 
-if (params.get('layout') === 'desktop') document.documentElement.classList.add('desktop');
 
 const store = {
   get() { try { return localStorage.getItem(STORE_KEY); } catch { return null; } },
@@ -374,11 +378,22 @@ function render() {
   const { body } = view;
   const status = body.status;
   const showAbout = Boolean(status && status.aboutPending && !body.confirmationSent);
-  [topEl, form, $('.unsubscribed')].forEach((n) => { n.hidden = true; });
+  [form, $('.unsubscribed')].forEach((n) => { n.hidden = true; });
+  step(showAbout ? 'about' : 'done',
+    showAbout ? (view.via === 'confirm' ? 'ledeAboutConfirmed' : 'ledeAbout') : body.confirmationSent ? 'ledeInbox' : 'ledeDone');
   about.hidden = !showAbout;
   done.hidden = showAbout;
   if (showAbout) renderAbout(); else renderDone();
   (showAbout ? about : done).focus({ preventScroll: true });
+}
+
+// Phones show the headline only on the form; desktops keep it on the left on every step, with a line for that step.
+function step(name, ledeKey) {
+  document.body.dataset.step = name;
+  const lede = $('.lede', topEl);
+  lede.dataset.i18n = ledeKey;
+  lede.textContent = t(ledeKey);
+  $('.invited').hidden = true;
 }
 
 // 7: about them
@@ -459,7 +474,7 @@ $('.copy').addEventListener('click', async (e) => {
   setTimeout(() => { e.target.textContent = t('copy'); }, 2000);
 });
 
-// ---- share pictures: four 1080×1080 cards made from the person's own details --------------------
+// ---- share pictures: 1080×1080 cards (four for someone you care about, three for yourself) made from the person's own details --------------------
 const C = { pink: '#FF2D78', deep: '#c4185a', tint: '#FFF0F5', ink: '#17171A', grey: '#6b6670', white: '#ffffff', night: '#1c1a1f' };
 const DISPLAY = '"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif';
 const BODY = '"DM Sans", -apple-system, "Segoe UI", system-ui, sans-serif';
@@ -471,8 +486,10 @@ function cardWords(status) {
   const obj = status.gender === 'FEMALE' ? 'her' : status.gender === 'MALE' ? 'him' : 'them';
   const rel = status.aboutRelation && status.aboutRelation !== 'OTHER' ? EN[`rel${status.aboutRelation}`].toLowerCase() : null;
   const place = [status.city, status.state || status.country].filter(Boolean).join(', ');
-  const savedFor = status.who === 'FAMILY' ? (rel ? ` for ${pron} ${rel}.` : ' for someone special.') : ' a place.';
-  const savedLead = status.who === 'FAMILY' ? `${name} saved a place` : `${name} saved`;
+  const subj = status.gender === 'FEMALE' ? 'she loves' : status.gender === 'MALE' ? 'he loves' : 'they love';
+  // only for someone they care about: "Shahida saved a place for her daughter." / "…for someone she loves."
+  const savedFor = rel ? ` for ${pron} ${rel}.` : ` for someone ${subj}.`;
+  const savedLead = `${name} saved a place`;
   return { name, obj, place, city: status.city, savedLead, savedFor, number: status.place };
 }
 
@@ -606,8 +623,10 @@ async function drawPictures(status) {
     await Promise.all([`800 64px ${DISPLAY}`, `400 36px ${BODY}`, `600 36px ${BODY}`, `500 36px ${BODY}`].map((f) => document.fonts.load(f)));
   } catch { /* draw with fallbacks */ }
   const words = cardWords(status);
-  canvases = [0, 1, 2, 3].map((k) => drawCard(k, words));
+  const kinds = status.who === 'FAMILY' ? [0, 1, 2, 3] : [1, 2, 3];
+  canvases = kinds.map((k) => drawCard(k, words));
   const grid = $('.picture-grid');
+  grid.classList.toggle('three', kinds.length === 3);
   grid.replaceChildren(...canvases.map((c, i) => {
     const b = el('button', '', { type: 'button', className: 'picture' + (i === picked ? ' picked' : '') });
     b.setAttribute('role', 'radio');
@@ -653,7 +672,8 @@ async function start() {
     if (unsubscribe) {
       const { ok } = await post('/unsubscribe', { token: unsubscribe });
       if (ok) {
-        [topEl, form].forEach((n) => { n.hidden = true; });
+        form.hidden = true;
+        step('unsubscribed', 'lede');
         $('.unsubscribed').hidden = false;
         try { history.replaceState(null, '', '/'); } catch { /* sandboxed preview */ }
       }
