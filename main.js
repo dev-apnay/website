@@ -1,4 +1,4 @@
-// Apnay waitlist. Language first, then the sign-up form; shows place in line and the share link.
+// Apnay waitlist. English by default; the small language menu at the top right switches the page.
 const API = 'https://tribe.moshuf.com/api/waitlist';
 const SITE = 'https://apnay.app/';
 const STORE_KEY = 'apnay.lang';
@@ -32,9 +32,9 @@ const LATIN_LIKE = new Set(['en', 'tr', 'ms', 'id', 'so', 'sw', 'ha', 'fr', 'es'
 
 // English is the design's exact wording, and the fallback for anything a translation lacks.
 const EN = {
-  chooseTitle: 'Choose your language', otherLanguage: 'Other language',
+  otherLanguage: 'Other language…',
   otherHint: 'Your phone can translate this page into any language. In Chrome, tap ⋮ then Translate. In Safari, tap the aA button then Translate to your language.',
-  continueEnglish: 'Continue in English', changeLanguage: 'Change language',
+  changeLanguage: 'Change language',
   h1a: 'Done swiping?', h1b: 'Ready for a real recommendation?',
   lede: "Leave your details and you'll hear before anyone else.", invited: 'A friend saved you a place',
   formTitle: 'Join the waitlist', whoLegend: 'Who are you signing up for?',
@@ -74,7 +74,6 @@ const form = $('#join');
 const topEl = $('#top');
 const done = $('.done');
 const footer = $('footer');
-const picker = $('#lang');
 const errorBox = $('.error', form);
 const submit = $('button[type="submit"]', form);
 const params = new URLSearchParams(location.search);
@@ -83,7 +82,6 @@ let lang = 'en';
 let dict = EN;
 let errorKey = null; // the error on screen, kept as a key so it can be re-translated
 let lastDone = null; // what the after-sign-up screen shows, for re-translating
-let started = false;
 
 if (params.get('layout') === 'desktop') document.documentElement.classList.add('desktop');
 
@@ -124,8 +122,12 @@ async function setLang(code) {
   root.dir = entry[3] || 'ltr';
   root.classList.toggle('nonlatin', !LATIN_LIKE.has(lang));
   $$('[data-i18n]').forEach((node) => { node.textContent = t(node.dataset.i18n); });
-  $$('.lang-current').forEach((node) => { node.textContent = entry[1]; });
-  $$('.lang-switch').forEach((node) => node.setAttribute('aria-label', t('changeLanguage')));
+  $$('.lang-current').forEach((node) => { node.textContent = lang.split('-')[0].toUpperCase(); });
+  $$('.lang-select').forEach((select) => {
+    select.value = lang;
+    select.setAttribute('aria-label', t('changeLanguage'));
+    select.querySelector('option[value="other"]').textContent = t('otherLanguage');
+  });
   document.title = `Apnay — ${t('formTitle')}`;
   buildCountries();
   updateWhoLabels();
@@ -133,55 +135,25 @@ async function setLang(code) {
   if (lastDone) renderDone();
 }
 
-function showPicker() {
-  [topEl, form, done, footer].forEach((n) => { n.hidden = true; });
-  picker.hidden = false;
-  window.scrollTo(0, 0);
-}
-
-function hidePicker() {
-  picker.hidden = true;
-  footer.hidden = false;
-  if (lastDone) { done.hidden = false; } else { topEl.hidden = false; form.hidden = false; }
-}
-
-async function choose(code) {
-  store.set(code);
-  await setLang(code);
-  hidePicker();
-  if (!started) start();
-}
-
-async function buildPicker() {
-  const browser = (navigator.languages || [navigator.language || 'en']).map((l) => l.toLowerCase());
-  const suggested = LANGS.find(([c]) => browser.some((b) => b === c.toLowerCase() || b.split('-')[0] === c.split('-')[0]));
-  const ordered = suggested ? [suggested, ...LANGS.filter((l) => l !== suggested)] : LANGS;
-  const list = $('.lang-list', picker);
-  ordered.forEach(([code, name, english, dir]) => {
-    const button = el('button', '', { type: 'button', className: 'lang-btn' + (code === suggested?.[0] ? ' suggested' : '') });
-    button.setAttribute('role', 'listitem');
-    button.lang = code;
-    button.append(el('span', name, { className: 'native', dir: dir || 'ltr' }), el('span', english, { className: 'english' }));
-    button.addEventListener('click', () => choose(code));
-    list.append(button);
+// The language menu: the phone's own list, opened from the small button at the top right.
+function buildMenus() {
+  $$('.lang-select').forEach((select) => {
+    LANGS.forEach(([code, name, english]) => select.append(new Option(code === 'en' ? name : `${name} · ${english}`, code)));
+    select.append(new Option(EN.otherLanguage, 'other'));
+    select.addEventListener('change', async () => {
+      if (select.value === 'other') {
+        // Any language: point to the phone's built-in page translation.
+        $('.lang-other').hidden = false;
+        select.value = lang;
+        window.scrollTo(0, 0);
+        return;
+      }
+      $('.lang-other').hidden = true;
+      store.set(select.value);
+      await setLang(select.value);
+    });
   });
-  const other = el('button', 'Other language', { type: 'button', className: 'lang-btn other' });
-  other.addEventListener('click', () => { $('.lang-other', picker).hidden = false; other.hidden = true; });
-  list.append(other);
-  $('.lang-continue', picker).addEventListener('click', () => choose('en'));
-  // Say "Choose your language" in the browser's language too, when it isn't English.
-  if (suggested && suggested[0] !== 'en') {
-    const d = await loadDict(suggested[0]);
-    if (d.chooseTitle) {
-      const sub = $('.lang-sub', picker);
-      sub.textContent = d.chooseTitle;
-      sub.lang = suggested[0];
-      sub.dir = suggested[3] || 'ltr';
-      sub.hidden = false;
-    }
-  }
 }
-$$('.lang-switch').forEach((b) => b.addEventListener('click', showPicker));
 
 // ---- countries: the most likely ones first, then everyone else A–Z, named in the chosen language
 const FIRST = ['US', 'CA', 'GB', 'PK', 'IN', 'BD', 'AE', 'SA', 'QA', 'AU'];
@@ -393,7 +365,6 @@ $('.copy').addEventListener('click', async (e) => {
 
 // ---- start: language first, then the form or the ?me= / ?confirm= screen ---------------------
 async function start() {
-  started = true;
   const me = (params.get('me') || '').trim();
   const confirm = (params.get('confirm') || '').trim();
   if (!me && !confirm) return;
@@ -407,14 +378,8 @@ async function start() {
 }
 
 (async () => {
-  buildCountries();
-  await buildPicker();
+  buildMenus();
   const wanted = params.get('lang') || store.get();
-  if (wanted && supported(wanted)) {
-    await setLang(wanted);
-    hidePicker();
-    start();
-  } else {
-    showPicker();
-  }
+  await setLang(wanted && supported(wanted) ? wanted : 'en');
+  start();
 })();

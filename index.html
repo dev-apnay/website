@@ -21,28 +21,15 @@
 </head>
 <body>
 <main>
-  <!-- First screen: choose a language -->
-  <section id="lang" hidden>
-    <a class="logo" href="/" dir="ltr" aria-label="Apnay, making matches">
-      <span class="name" aria-hidden="true"><i>A</i><i>P</i><i>N</i><i>A</i><i>Y</i></span>
-      <span class="tag" aria-hidden="true">MAKING MATCHES</span>
-    </a>
-    <h1 class="lang-title">Choose your language</h1>
-    <p class="lang-sub muted" hidden></p>
-    <div class="lang-list" role="list"></div>
-    <div class="lang-other" hidden>
-      <p data-i18n="otherHint">Your phone can translate this page into any language. In Chrome, tap ⋮ then Translate. In Safari, tap the aA button then Translate to your language.</p>
-      <button type="button" class="btn ghost lang-continue">Continue in English</button>
-    </div>
-  </section>
+  <p class="lang-other" hidden data-i18n="otherHint">Your phone can translate this page into any language. In Chrome, tap ⋮ then Translate. In Safari, tap the aA button then Translate to your language.</p>
 
-  <header id="top" hidden>
+  <header id="top">
     <div class="topbar">
       <a class="logo" href="/" dir="ltr" aria-label="Apnay, making matches">
         <span class="name" aria-hidden="true"><i>A</i><i>P</i><i>N</i><i>A</i><i>Y</i></span>
         <span class="tag" aria-hidden="true">MAKING MATCHES</span>
       </a>
-      <button type="button" class="lang-switch" aria-label="Change language"><span aria-hidden="true">🌐</span> <span class="lang-current">English</span></button>
+      <label class="lang-switch"><span aria-hidden="true">🌐</span> <span class="lang-current">EN</span><select class="lang-select" aria-label="Language"></select></label>
     </div>
     <div class="hero">
       <h1><span data-i18n="h1a">Done swiping?</span> <em data-i18n="h1b">Ready for a real recommendation?</em></h1>
@@ -51,7 +38,7 @@
     </div>
   </header>
 
-  <form id="join" novalidate hidden>
+  <form id="join" novalidate>
     <h2 data-i18n="formTitle">Join the waitlist</h2>
 
     <fieldset class="field" id="f-who">
@@ -117,7 +104,7 @@
         <span class="name" aria-hidden="true"><i>A</i><i>P</i><i>N</i><i>A</i><i>Y</i></span>
         <span class="tag" aria-hidden="true">MAKING MATCHES</span>
       </a>
-      <button type="button" class="lang-switch" aria-label="Change language"><span aria-hidden="true">🌐</span> <span class="lang-current">English</span></button>
+      <label class="lang-switch"><span aria-hidden="true">🌐</span> <span class="lang-current">EN</span><select class="lang-select" aria-label="Language"></select></label>
     </div>
     <h1 class="done-title"></h1>
 
@@ -147,7 +134,7 @@
     <p class="muted follow"></p>
   </section>
 
-  <footer hidden>
+  <footer>
     <span>© 2026 Apnay</span>
     <a href="privacy.html" data-i18n="privacyNote">Privacy note</a>
     <a href="mailto:hello@apnay.app" dir="ltr">hello@apnay.app</a>
