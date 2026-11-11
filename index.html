@@ -23,6 +23,7 @@
 <main>
   <p class="lang-other" hidden data-i18n="otherHint">Your phone can translate this page into any language. In Chrome, tap ⋮ then Translate. In Safari, tap the aA button then Translate to your language.</p>
 
+  <!-- 1–4: arrive and sign up -->
   <header id="top">
     <div class="topbar">
       <a class="logo" href="/" dir="ltr" aria-label="Apnay, making matches">
@@ -50,40 +51,41 @@
     </fieldset>
 
     <label class="field" id="f-firstName"><span class="label" data-i18n="firstName">First name</span>
-      <input name="firstName" autocomplete="given-name" maxlength="120"></label>
+      <input id="firstName" name="firstName" autocomplete="given-name" maxlength="120"></label>
+
+    <label class="field" id="f-lastName"><span class="label" data-i18n="lastName">Last name</span>
+      <input id="lastName" name="lastName" autocomplete="family-name" maxlength="120"></label>
 
     <label class="field" id="f-email"><span class="label" data-i18n="email">Email</span>
-      <input name="email" type="email" dir="ltr" autocomplete="email" inputmode="email" maxlength="254"></label>
+      <input id="email" name="email" type="email" dir="ltr" autocomplete="email" inputmode="email" maxlength="254" placeholder="name@example.com"></label>
 
-    <label class="field" id="f-phone"><span class="label"><span data-i18n="phone">Phone or WhatsApp</span> <span class="opt" data-i18n="optional">(optional)</span></span>
-      <input name="phone" type="tel" dir="ltr" autocomplete="tel" inputmode="tel" maxlength="40">
-      <span class="hint" data-i18n="phoneHint">Include your country code.</span></label>
-
-    <div class="pair">
-      <label class="field" id="f-city"><span class="label" data-i18n="city">City</span>
-        <input name="city" autocomplete="address-level2" maxlength="120"></label>
-      <label class="field" id="f-country"><span class="label" data-i18n="country">Country</span>
-        <select name="country" autocomplete="country-name"></select></label>
+    <div class="field" id="f-phone">
+      <span class="label"><span data-i18n="phone">Phone or WhatsApp</span> <span class="opt" data-i18n="optional">(optional)</span></span>
+      <div class="phone-row" dir="ltr">
+        <label class="code-box"><span class="code-shown" data-i18n="code">Code</span><select id="phoneCode" name="phoneCode" aria-label="Country calling code"></select></label>
+        <input id="phone" name="phone" type="tel" autocomplete="tel-national" inputmode="tel" maxlength="30" placeholder="214 555 0100" aria-label="Phone number">
+      </div>
     </div>
 
+    <label class="field" id="f-country"><span class="label" data-i18n="country">Country</span>
+      <select id="country" name="country" autocomplete="country-name"></select></label>
+
+    <label class="field" id="f-state" hidden><span class="label" data-i18n="state">State</span>
+      <select id="state" name="state" autocomplete="address-level1"></select></label>
+
+    <label class="field" id="f-city"><span class="label" data-i18n="city">City</span>
+      <input id="city" name="city" autocomplete="address-level2" maxlength="120"></label>
+
     <fieldset class="field" id="f-gender">
-      <legend><span class="gender-label" data-i18n="gender">Gender</span></legend>
+      <legend data-i18n="yourGender">Your gender</legend>
       <div class="choices two">
         <label class="choice pill-choice"><input type="radio" name="gender" value="MALE"><span data-i18n="male">Male</span></label>
         <label class="choice pill-choice"><input type="radio" name="gender" value="FEMALE"><span data-i18n="female">Female</span></label>
       </div>
     </fieldset>
 
-    <label class="field" id="f-ageRange"><span class="label age-label" data-i18n="ageRange">Age range</span>
-      <select name="ageRange">
-        <option value="" data-i18n="choose">Choose…</option>
-        <option value="21-25">21–25</option>
-        <option value="26-30">26–30</option>
-        <option value="31-35">31–35</option>
-        <option value="36-40">36–40</option>
-        <option value="41-45">41–45</option>
-        <option value="46+" data-i18n="age46">46 or over</option>
-      </select></label>
+    <label class="field" id="f-ageRange"><span class="label" data-i18n="yourAgeRange">Your age range</span>
+      <select id="ageRange" name="ageRange" class="age-select"></select></label>
 
     <div class="ticks">
       <label class="tick" id="f-adult"><input type="checkbox" name="adult"><span><b data-i18n="adultB">I'm 21 or older.</b> <span data-i18n="adultRest">Apnay is for people 21 and over.</span></span></label>
@@ -98,6 +100,7 @@
     <p class="fine"><span data-i18n="fine">We never sell your details.</span> <a href="privacy.html" data-i18n="fineLink">How we use them</a></p>
   </form>
 
+  <!-- 5, 8, 9: one more step / you're on the list / pick a picture -->
   <section class="done" hidden tabindex="-1" aria-live="polite">
     <div class="topbar">
       <a class="logo" href="/" dir="ltr" aria-label="Apnay, making matches">
@@ -123,6 +126,15 @@
     <div class="share" hidden>
       <h2 data-i18n="moveUp">Move up the list</h2>
       <p class="muted move-up-text"></p>
+
+      <div class="pictures" hidden>
+        <p class="pick-label" data-i18n="pickPicture">Pick a picture to send with your link</p>
+        <div class="picture-grid" role="radiogroup"></div>
+        <button type="button" class="btn share-picture" data-i18n="sharePicture">Share with this picture</button>
+        <button type="button" class="link-button save-picture" data-i18n="savePicture">Save the picture instead</button>
+        <p class="picture-note muted small" hidden></p>
+      </div>
+
       <p class="link" dir="ltr"><span class="share-url"></span></p>
       <div class="share-buttons">
         <a class="btn wa" target="_blank" rel="noopener" data-i18n="shareWa">Share on WhatsApp</a>
@@ -134,12 +146,56 @@
     <p class="muted follow"></p>
   </section>
 
+  <!-- 7: about them (signing up someone else; optional, once, after confirming) -->
+  <section class="about" hidden tabindex="-1">
+    <div class="topbar">
+      <a class="logo" href="/" dir="ltr" aria-label="Apnay, making matches">
+        <span class="name" aria-hidden="true"><i>A</i><i>P</i><i>N</i><i>A</i><i>Y</i></span>
+        <span class="tag" aria-hidden="true">MAKING MATCHES</span>
+      </a>
+      <label class="lang-switch"><span aria-hidden="true">🌐</span> <span class="lang-current">EN</span><select class="lang-select" aria-label="Language"></select></label>
+    </div>
+    <p class="confirmed-pill"><span aria-hidden="true">✓</span> <span class="confirmed-text"></span></p>
+    <h1 data-i18n="aboutTitle">Would you like to tell us a little about them?</h1>
+    <p class="muted" data-i18n="aboutText">Completely optional. It helps us get things ready for the person you're signing up for. We don't ask for their name or contact details, and we never contact them.</p>
+    <form id="aboutForm" novalidate>
+      <label class="field"><span class="label" data-i18n="theyAreMy">They are my</span>
+        <select id="aboutRelation" name="relation"></select></label>
+      <fieldset class="field">
+        <legend data-i18n="theirGender">Their gender</legend>
+        <div class="choices two">
+          <label class="choice pill-choice"><input type="radio" name="aboutGender" value="MALE"><span data-i18n="male">Male</span></label>
+          <label class="choice pill-choice"><input type="radio" name="aboutGender" value="FEMALE"><span data-i18n="female">Female</span></label>
+        </div>
+      </fieldset>
+      <label class="field"><span class="label" data-i18n="theirAgeRange">Their age range</span>
+        <select id="aboutAgeRange" name="aboutAgeRange" class="age-select"></select></label>
+      <label class="field"><span class="label" data-i18n="whereTheyLive">Where do they live?</span>
+        <select id="aboutCountry" name="aboutCountry"></select></label>
+      <button type="submit" class="btn" data-i18n="saveContinue">Save and continue</button>
+      <button type="button" class="btn ghost skip-about" data-i18n="skipForNow">Skip for now</button>
+    </form>
+  </section>
+
+  <!-- from the e-mail's Unsubscribe link -->
+  <section class="unsubscribed" hidden>
+    <div class="topbar">
+      <a class="logo" href="/" dir="ltr" aria-label="Apnay, making matches">
+        <span class="name" aria-hidden="true"><i>A</i><i>P</i><i>N</i><i>A</i><i>Y</i></span>
+        <span class="tag" aria-hidden="true">MAKING MATCHES</span>
+      </a>
+    </div>
+    <h1 data-i18n="unsubTitle">You're unsubscribed.</h1>
+    <p class="muted" data-i18n="unsubText">You won't get any more emails or texts from Apnay. Changed your mind? Write to hello@apnay.app.</p>
+  </section>
+
   <footer>
     <span>© 2026 Apnay</span>
     <a href="privacy.html" data-i18n="privacyNote">Privacy note</a>
     <a href="mailto:hello@apnay.app" dir="ltr">hello@apnay.app</a>
   </footer>
 </main>
+<script src="data.js" defer></script>
 <script src="main.js" defer></script>
 </body>
 </html>

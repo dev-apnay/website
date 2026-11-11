@@ -153,3 +153,32 @@ html:lang(ur), html:lang(pa-Arab) { --body: "Noto Nastaliq Urdu", "Jameel Noori 
 html:lang(ur) body, html:lang(pa-Arab) body { line-height: 1.9; }
 html:lang(ur) h1, html:lang(pa-Arab) h1 { line-height: 1.75; font-family: var(--body); font-weight: 700; }
 html:lang(ur) h2, html:lang(pa-Arab) h2 { line-height: 1.8; font-family: var(--body); font-weight: 700; }
+
+/* ---- WL3k: phone code + number, about them, share pictures ---- */
+.phone-row { display: grid; grid-template-columns: 104px 1fr; gap: 10px; }
+.code-box { position: relative; display: flex; align-items: center; min-height: 48px; padding: 0 30px 0 14px; background: var(--field) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%236b6670' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 12px center;
+  border: 1.5px solid var(--line); border-radius: 12px; font-size: 16px; cursor: pointer; }
+.code-box.empty .code-shown { color: var(--grey); }
+.code-box:focus-within { border-color: var(--brand); }
+.code-box select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 16px; min-height: 0; }
+.invalid .code-box, .invalid .phone-row input { border-color: var(--error); }
+input::placeholder { color: #a39ca6; }
+
+.confirmed-pill { display: inline-flex; align-items: center; gap: 8px; margin: 22px 0 0; padding: 7px 14px 7px 8px; border-radius: 999px;
+  background: var(--tint); color: var(--brand-deep); font-weight: 600; font-size: 14px; }
+.confirmed-pill span:first-child { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--brand); color: #fff; font-size: 12px; }
+.about h1 { font-size: clamp(28px, 7.5vw, 36px); margin-top: 14px; }
+.about > .muted { margin-bottom: 22px; }
+.about form { margin-top: 0; display: grid; gap: 0; }
+.about .btn.ghost { margin-top: 10px; }
+
+.pictures { margin-top: 20px; }
+.pick-label { font-weight: 600; font-size: 13px; margin: 0 0 10px; }
+.picture-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.picture { padding: 0; border: 3px solid transparent; border-radius: 16px; background: none; cursor: pointer; line-height: 0; }
+.picture img { width: 100%; border-radius: 12px; display: block; }
+.picture.picked { border-color: var(--brand); }
+.picture:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.link-button { display: block; width: 100%; margin: 10px 0 0; padding: 8px; background: none; border: 0; color: var(--brand-deep); font: 600 15px var(--body); cursor: pointer; }
+.picture-note { text-align: center; margin: 6px 0 0 !important; }
+.unsubscribed h1 { margin-top: 28px; }
