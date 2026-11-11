@@ -1,7 +1,10 @@
-// Apnay waitlist (design WL3k). English by default; the small language menu at the top right switches the page.
-const API = 'https://tribe.moshuf.com/api/waitlist';
+// Apnay waitlist (designs WL3k, WL3l). English by default; the small language menu at the top right switches the page.
+const API = 'https://api.apnay.app/api/waitlist';
 const SITE = 'https://apnay.app/';
 const STORE_KEY = 'apnay.lang';
+// Your own details for the share pictures, kept in this browser only between signing up and tapping
+// the confirm link (which, on purpose, tells the page nothing personal). Removed once used.
+const MINE_KEY = 'apnay.mine';
 
 // [code, name in that language, name in English, direction]. Translations live in i18n/<code>.json.
 const LANGS = [
@@ -75,6 +78,7 @@ const EN = {
   waText: "Done swiping? Ready for a real recommendation? I'm on the Apnay waitlist — join with my link: {link}",
   follow: 'Until then, follow along at {handle} on Instagram and TikTok.',
   confirmedPill: "You're confirmed. You're on the list.",
+  linkUsed: "This link has already been used. If you confirmed before, you're all set.",
   aboutTitle: 'Would you like to tell us a little about them?',
   aboutText: "Completely optional. It helps us get things ready for the person you're signing up for. We don't ask for their name or contact details, and we never contact them.",
   theyAreMy: 'They are my', theirGender: 'Their gender', theirAgeRange: 'Their age range', whereTheyLive: 'Where do they live?',
@@ -351,6 +355,8 @@ form.addEventListener('submit', async (e) => {
       website: value('website'),
     });
     if (!ok || !body.ok) return fail(...(SERVER_ERRORS[body.message] || [null, 'eNetwork']));
+    // kept only until they tap the confirm link, for their share pictures
+    if (body.confirmationSent && body.status) mine.set(body.status);
     show(body, value('email'), 'signup');
   } catch {
     fail(null, 'eNetwork');
@@ -365,11 +371,27 @@ function hostOf(url) {
 }
 
 // ---- after signing up: which screen ------------------------------------------------------------
+const mine = {
+  get() { try { return JSON.parse(localStorage.getItem(MINE_KEY) || 'null'); } catch { return null; } },
+  set(v) { try { localStorage.setItem(MINE_KEY, JSON.stringify(v)); } catch { /* private mode */ } },
+  clear() { try { localStorage.removeItem(MINE_KEY); } catch { /* private mode */ } },
+};
+
+function clearAddress() {
+  try { history.replaceState(null, '', '/'); } catch { /* sandboxed preview */ }
+}
+
+// body: the server's answer. Signing up returns your details (you just typed them); the confirm link and
+// the "about them" step return only your place in line, so the pictures use what this browser kept.
 function show(body, email, via) {
-  view = { body, email, via };
+  if (!body.status && body.place) {
+    const kept = mine.get();
+    const yours = kept && kept.code === body.place.code ? kept : {};
+    body.status = { ...yours, ...body.place, confirmed: true };
+    if (via === 'confirm') mine.clear();
+  }
+  view = { body, email, via, aboutKey: body.aboutKey || null };
   picked = 0;
-  // your own link: coming back to it shows this again
-  if (body.status) { try { history.replaceState(null, '', `/?me=${body.status.token}`); } catch { /* sandboxed preview */ } }
   render();
   window.scrollTo(0, 0);
 }
@@ -377,7 +399,7 @@ function show(body, email, via) {
 function render() {
   const { body } = view;
   const status = body.status;
-  const showAbout = Boolean(status && status.aboutPending && !body.confirmationSent);
+  const showAbout = Boolean(status && view.aboutKey && !body.confirmationSent);
   [form, $('.unsubscribed')].forEach((n) => { n.hidden = true; });
   step(showAbout ? 'about' : 'done',
     showAbout ? (view.via === 'confirm' ? 'ledeAboutConfirmed' : 'ledeAbout') : body.confirmationSent ? 'ledeInbox' : 'ledeDone');
@@ -416,11 +438,15 @@ async function answerAbout(answers) {
   const buttons = $$('#aboutForm button');
   buttons.forEach((b) => { b.disabled = true; });
   try {
-    const { ok, body } = await post('/about', { token: view.body.status.token, ...answers });
-    if (ok && body.status) { show(body, view.email, 'about'); return; }
+    const { ok, body } = await post('/about', { token: view.aboutKey, ...answers });
+    if (ok && body.place) {
+      const status = { ...view.body.status, ...body.place, aboutRelation: answers.relation || null };
+      show({ ...view.body, status, place: null, aboutKey: null }, view.email, 'about');
+      return;
+    }
   } catch { /* fall through */ }
   // the answer is optional: if it can't be saved, carry on to the list anyway
-  view.body.status.aboutPending = false;
+  view.aboutKey = null;
   render();
   buttons.forEach((b) => { b.disabled = false; });
 }
@@ -450,9 +476,11 @@ function renderDone() {
     const n = status.friends;
     const key = n === 0 ? 'friendsNone' : new Intl.PluralRules(lang).select(n) === 'one' ? 'friendsOne' : 'friendsOther';
     fill($('.friends'), t(key), { n: el('b', number.format(n)) });
-    // the pictures come once they're confirmed (step 8), not while the e-mail is still to be opened
-    $('.pictures').hidden = Boolean(body.confirmationSent);
-    if (!body.confirmationSent) drawPictures(status);
+    // the pictures come once they're confirmed (step 8), not while the e-mail is still to be opened,
+    // and only where this browser knows the details they're made from
+    const pictures = !body.confirmationSent && Boolean(status.firstName);
+    $('.pictures').hidden = !pictures;
+    if (pictures) drawPictures(status);
   }
   fill($('.follow'), t('follow'), {
     handle: el('a', '@meetapnay', { href: 'https://www.instagram.com/meetapnay', target: '_blank', rel: 'noopener', dir: 'ltr' }),
@@ -664,31 +692,29 @@ $('.share-picture').addEventListener('click', async () => {
 $('.save-picture').addEventListener('click', async () => savePicture(await pictureFile()));
 
 // ---- start: the form, or a link from the e-mail / your own link --------------------------------
+// The e-mail's keys each do one thing; neither stays in the address bar once used.
 async function start() {
-  const me = (params.get('me') || '').trim();
   const confirm = (params.get('confirm') || '').trim();
   const unsubscribe = (params.get('unsubscribe') || '').trim();
+  if (params.has('me')) clearAddress(); // the old private links are retired
   try {
     if (unsubscribe) {
       const { ok } = await post('/unsubscribe', { token: unsubscribe });
+      clearAddress();
       if (ok) {
+        mine.clear();
         form.hidden = true;
         step('unsubscribed', 'lede');
         $('.unsubscribed').hidden = false;
-        try { history.replaceState(null, '', '/'); } catch { /* sandboxed preview */ }
       }
       return;
     }
     if (confirm) {
       const { ok, body } = await post('/confirm', { token: confirm });
-      if (ok && body.status) show(body, '', 'confirm');
+      clearAddress();
+      if (ok && body.place) show(body, '', 'confirm');
+      else $('.link-used').hidden = false;
       return;
-    }
-    if (me) {
-      // your own link (?me=TOKEN); older links used the share code and only show the form
-      if (!/^[0-9a-f]{32,}$/.test(me)) return;
-      const res = await fetch(`${API}/me/${encodeURIComponent(me)}`);
-      if (res.ok) show(await res.json(), '', 'me');
     }
   } catch { /* offline: leave the form */ }
 }
