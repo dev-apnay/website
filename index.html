@@ -2,60 +2,136 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Apnay — join the waitlist</title>
-  <meta name="description" content="Done swiping? Ready for a real recommendation? Join the Apnay waitlist.">
-  <meta name="theme-color" content="#fff8f3">
-  <meta property="og:title" content="Apnay — join the waitlist">
-  <meta property="og:description" content="Done swiping? Ready for a real recommendation?">
-  <meta property="og:url" content="https://apnay.app/">
+  <meta name="description" content="Done swiping? Ready for a real recommendation? Leave your details and you'll hear before anyone else.">
+  <meta name="theme-color" content="#ffffff">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://apnay.app/">
+  <meta property="og:title" content="Done swiping? Ready for a real recommendation?">
+  <meta property="og:description" content="Join the Apnay waitlist and hear before anyone else.">
+  <meta property="og:image" content="https://apnay.app/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/bricolage-grotesque-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="top">
-    <a class="wordmark" href="/" aria-label="Apnay home">apnay<span aria-hidden="true">.</span></a>
-    <a class="top-cta" href="#join">Join the waitlist</a>
+<main>
+  <header id="top">
+    <a class="logo" href="/" aria-label="Apnay, making matches">
+      <span class="name" aria-hidden="true"><i>A</i><i>P</i><i>N</i><i>A</i><i>Y</i></span>
+      <span class="tag" aria-hidden="true">MAKING MATCHES</span>
+    </a>
+    <div class="hero">
+      <h1>Done swiping? <em>Ready for a real recommendation?</em></h1>
+      <p class="lede">Leave your details and you'll hear before anyone else.</p>
+      <p class="invited" hidden>A friend saved you a place</p>
+    </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <div class="hero-copy">
-                <h1>Done swiping? <span class="pink">Ready for a real recommendation?</span></h1>
-        <p class="lede">Leave your details and you'll hear before anyone else.</p>
+  <form id="join" novalidate>
+    <h2>Join the waitlist</h2>
+
+    <fieldset class="field" id="f-who">
+      <legend>Who are you signing up for?</legend>
+      <div class="choices two">
+        <label class="choice card"><input type="radio" name="who" value="SELF"><span><b>Myself</b><small>I'm looking to get married.</small></span></label>
+        <label class="choice card"><input type="radio" name="who" value="FAMILY"><span><b>Someone I care about</b><small>A son, daughter, sister, friend…</small></span></label>
       </div>
+    </fieldset>
 
-      <form id="join" class="card join" novalidate>
-        <h2>Join the waitlist</h2>
-        <fieldset class="roles">
-          <legend>Who are you signing up for?</legend>
-          <label class="role"><input type="radio" name="role" value="SELF" checked><span><strong>Myself</strong><small>I'm looking to get married.</small></span></label>
-          <label class="role"><input type="radio" name="role" value="FAMILY"><span><strong>Someone I care about</strong><small>A son, daughter, sister, friend…</small></span></label>
-        </fieldset>
-        <label class="field"><span>Name</span><input name="name" autocomplete="name" maxlength="120" placeholder="Your name"></label>
-        <label class="field"><span>E-mail <b aria-hidden="true">*</b></span><input name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com"></label>
-        <label class="field"><span>City <i>(optional)</i></span><input name="city" autocomplete="address-level2" maxlength="120" placeholder="Where you live"></label>
-        <label class="hp" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off"></label>
-        <button type="submit" class="btn">Join the waitlist</button>
-        <p class="status" role="status" aria-live="polite"></p>
-        <p class="fine">We'll only e-mail you about Apnay's launch. <a href="privacy.html">Privacy</a></p>
-      </form>
+    <label class="field" id="f-firstName"><span class="label">First name</span>
+      <input name="firstName" autocomplete="given-name" maxlength="120"></label>
 
-      <div class="card done" hidden tabindex="-1">
-        <p class="done-mark" aria-hidden="true">✓</p>
-        <h2>You're on the list.</h2>
-        <p>You'll hear before anyone else. Until then, follow along at @meetapnay on Instagram and TikTok.</p>
+    <label class="field" id="f-email"><span class="label">Email</span>
+      <input name="email" type="email" autocomplete="email" inputmode="email" maxlength="254"></label>
+
+    <label class="field" id="f-phone"><span class="label">Phone or WhatsApp <span class="opt">(optional)</span></span>
+      <input name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40">
+      <span class="hint">Include your country code.</span></label>
+
+    <div class="pair">
+      <label class="field" id="f-city"><span class="label">City</span>
+        <input name="city" autocomplete="address-level2" maxlength="120"></label>
+      <label class="field" id="f-country"><span class="label">Country</span>
+        <select name="country" autocomplete="country-name"><option value="">Choose…</option></select></label>
+    </div>
+
+    <fieldset class="field" id="f-gender">
+      <legend><span class="gender-label">Gender</span></legend>
+      <div class="choices two">
+        <label class="choice pill-choice"><input type="radio" name="gender" value="MALE"><span>Male</span></label>
+        <label class="choice pill-choice"><input type="radio" name="gender" value="FEMALE"><span>Female</span></label>
       </div>
-    </section>
+    </fieldset>
 
+    <label class="field" id="f-ageRange"><span class="label age-label">Age range</span>
+      <select name="ageRange">
+        <option value="">Choose…</option>
+        <option value="21-25">21–25</option>
+        <option value="26-30">26–30</option>
+        <option value="31-35">31–35</option>
+        <option value="36-40">36–40</option>
+        <option value="41-45">41–45</option>
+        <option value="46+">46 or over</option>
+      </select></label>
 
-  </main>
+    <div class="ticks">
+      <label class="tick" id="f-adult"><input type="checkbox" name="adult"><span><b>I'm 21 or older.</b> Apnay is for people 21 and over.</span></label>
+      <label class="tick" id="f-emailOptIn"><input type="checkbox" name="emailOptIn"><span><b>Send me updates and early access from Apnay.</b> Unsubscribe anytime.</span></label>
+      <label class="tick" id="f-smsOptIn" hidden><input type="checkbox" name="smsOptIn"><span><b>Text or WhatsApp me updates from Apnay.</b> Msg &amp; data rates may apply. Reply STOP to opt out. Not required to sign up.</span></label>
+    </div>
 
-  <footer class="foot">
-    <p>© 2026 Apnay · <a href="privacy.html">Privacy</a> · <a href="mailto:hello@apnay.app">hello@apnay.app</a></p>
+    <label class="hp" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off"></label>
+
+    <button type="submit" class="btn">Sign up for launch updates</button>
+    <p class="error" role="alert" aria-live="assertive" hidden></p>
+    <p class="fine">We never sell your details. <a href="privacy.html">How we use them</a></p>
+  </form>
+
+  <section class="done" hidden tabindex="-1" aria-live="polite">
+    <a class="logo" href="/" aria-label="Apnay, making matches">
+      <span class="name" aria-hidden="true"><i>A</i><i>P</i><i>N</i><i>A</i><i>Y</i></span>
+      <span class="tag" aria-hidden="true">MAKING MATCHES</span>
+    </a>
+    <h1 class="done-title">You're on the list.</h1>
+
+    <div class="inbox" hidden>
+      <p class="kicker">CHECK YOUR INBOX</p>
+      <p>We've sent a confirmation to <b class="inbox-email"></b>. Tap the link in it and you're in.</p>
+      <p class="small">Nothing there? Look in spam or promotions, or write to <a href="mailto:hello@apnay.app">hello@apnay.app</a>.</p>
+    </div>
+
+    <div class="place" hidden>
+      <p>Your place in line</p>
+      <p class="num">#<span class="place-n"></span></p>
+      <p>of <span class="place-total"></span> on the waitlist</p>
+    </div>
+
+    <div class="share" hidden>
+      <h2>Move up the list</h2>
+      <p class="muted">Every friend who joins with your link moves you up <b>5</b> places.</p>
+      <p class="link"><span class="share-url"></span></p>
+      <div class="share-buttons">
+        <a class="btn wa" target="_blank" rel="noopener">Share on WhatsApp</a>
+        <button type="button" class="btn ghost copy">Copy link</button>
+      </div>
+      <p class="friends"></p>
+    </div>
+
+    <p class="muted follow">Until then, follow along at <a href="https://www.instagram.com/meetapnay" target="_blank" rel="noopener">@meetapnay</a> on Instagram and TikTok.</p>
+  </section>
+
+  <footer>
+    <span>© 2026 Apnay</span>
+    <a href="privacy.html">Privacy note</a>
+    <a href="mailto:hello@apnay.app">hello@apnay.app</a>
   </footer>
-
-  <script src="main.js" defer></script>
+</main>
+<script src="main.js" defer></script>
 </body>
 </html>
