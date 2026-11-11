@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -21,115 +21,136 @@
 </head>
 <body>
 <main>
-  <header id="top">
-    <a class="logo" href="/" aria-label="Apnay, making matches">
+  <!-- First screen: choose a language -->
+  <section id="lang" hidden>
+    <a class="logo" href="/" dir="ltr" aria-label="Apnay, making matches">
       <span class="name" aria-hidden="true"><i>A</i><i>P</i><i>N</i><i>A</i><i>Y</i></span>
       <span class="tag" aria-hidden="true">MAKING MATCHES</span>
     </a>
+    <h1 class="lang-title">Choose your language</h1>
+    <p class="lang-sub muted" hidden></p>
+    <div class="lang-list" role="list"></div>
+    <div class="lang-other" hidden>
+      <p data-i18n="otherHint">Your phone can translate this page into any language. In Chrome, tap ⋮ then Translate. In Safari, tap the aA button then Translate to your language.</p>
+      <button type="button" class="btn ghost lang-continue">Continue in English</button>
+    </div>
+  </section>
+
+  <header id="top" hidden>
+    <div class="topbar">
+      <a class="logo" href="/" dir="ltr" aria-label="Apnay, making matches">
+        <span class="name" aria-hidden="true"><i>A</i><i>P</i><i>N</i><i>A</i><i>Y</i></span>
+        <span class="tag" aria-hidden="true">MAKING MATCHES</span>
+      </a>
+      <button type="button" class="lang-switch" aria-label="Change language"><span aria-hidden="true">🌐</span> <span class="lang-current">English</span></button>
+    </div>
     <div class="hero">
-      <h1>Done swiping? <em>Ready for a real recommendation?</em></h1>
-      <p class="lede">Leave your details and you'll hear before anyone else.</p>
-      <p class="invited" hidden>A friend saved you a place</p>
+      <h1><span data-i18n="h1a">Done swiping?</span> <em data-i18n="h1b">Ready for a real recommendation?</em></h1>
+      <p class="lede" data-i18n="lede">Leave your details and you'll hear before anyone else.</p>
+      <p class="invited" hidden data-i18n="invited">A friend saved you a place</p>
     </div>
   </header>
 
-  <form id="join" novalidate>
-    <h2>Join the waitlist</h2>
+  <form id="join" novalidate hidden>
+    <h2 data-i18n="formTitle">Join the waitlist</h2>
 
     <fieldset class="field" id="f-who">
-      <legend>Who are you signing up for?</legend>
+      <legend data-i18n="whoLegend">Who are you signing up for?</legend>
       <div class="choices two">
-        <label class="choice card"><input type="radio" name="who" value="SELF"><span><b>Myself</b><small>I'm looking to get married.</small></span></label>
-        <label class="choice card"><input type="radio" name="who" value="FAMILY"><span><b>Someone I care about</b><small>A son, daughter, sister, friend…</small></span></label>
+        <label class="choice card"><input type="radio" name="who" value="SELF"><span><b data-i18n="self">Myself</b><small data-i18n="selfSub">I'm looking to get married.</small></span></label>
+        <label class="choice card"><input type="radio" name="who" value="FAMILY"><span><b data-i18n="family">Someone I care about</b><small data-i18n="familySub">A son, daughter, sister, friend…</small></span></label>
       </div>
     </fieldset>
 
-    <label class="field" id="f-firstName"><span class="label">First name</span>
+    <label class="field" id="f-firstName"><span class="label" data-i18n="firstName">First name</span>
       <input name="firstName" autocomplete="given-name" maxlength="120"></label>
 
-    <label class="field" id="f-email"><span class="label">Email</span>
-      <input name="email" type="email" autocomplete="email" inputmode="email" maxlength="254"></label>
+    <label class="field" id="f-email"><span class="label" data-i18n="email">Email</span>
+      <input name="email" type="email" dir="ltr" autocomplete="email" inputmode="email" maxlength="254"></label>
 
-    <label class="field" id="f-phone"><span class="label">Phone or WhatsApp <span class="opt">(optional)</span></span>
-      <input name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40">
-      <span class="hint">Include your country code.</span></label>
+    <label class="field" id="f-phone"><span class="label"><span data-i18n="phone">Phone or WhatsApp</span> <span class="opt" data-i18n="optional">(optional)</span></span>
+      <input name="phone" type="tel" dir="ltr" autocomplete="tel" inputmode="tel" maxlength="40">
+      <span class="hint" data-i18n="phoneHint">Include your country code.</span></label>
 
     <div class="pair">
-      <label class="field" id="f-city"><span class="label">City</span>
+      <label class="field" id="f-city"><span class="label" data-i18n="city">City</span>
         <input name="city" autocomplete="address-level2" maxlength="120"></label>
-      <label class="field" id="f-country"><span class="label">Country</span>
-        <select name="country" autocomplete="country-name"><option value="">Choose…</option></select></label>
+      <label class="field" id="f-country"><span class="label" data-i18n="country">Country</span>
+        <select name="country" autocomplete="country-name"></select></label>
     </div>
 
     <fieldset class="field" id="f-gender">
-      <legend><span class="gender-label">Gender</span></legend>
+      <legend><span class="gender-label" data-i18n="gender">Gender</span></legend>
       <div class="choices two">
-        <label class="choice pill-choice"><input type="radio" name="gender" value="MALE"><span>Male</span></label>
-        <label class="choice pill-choice"><input type="radio" name="gender" value="FEMALE"><span>Female</span></label>
+        <label class="choice pill-choice"><input type="radio" name="gender" value="MALE"><span data-i18n="male">Male</span></label>
+        <label class="choice pill-choice"><input type="radio" name="gender" value="FEMALE"><span data-i18n="female">Female</span></label>
       </div>
     </fieldset>
 
-    <label class="field" id="f-ageRange"><span class="label age-label">Age range</span>
+    <label class="field" id="f-ageRange"><span class="label age-label" data-i18n="ageRange">Age range</span>
       <select name="ageRange">
-        <option value="">Choose…</option>
+        <option value="" data-i18n="choose">Choose…</option>
         <option value="21-25">21–25</option>
         <option value="26-30">26–30</option>
         <option value="31-35">31–35</option>
         <option value="36-40">36–40</option>
         <option value="41-45">41–45</option>
-        <option value="46+">46 or over</option>
+        <option value="46+" data-i18n="age46">46 or over</option>
       </select></label>
 
     <div class="ticks">
-      <label class="tick" id="f-adult"><input type="checkbox" name="adult"><span><b>I'm 21 or older.</b> Apnay is for people 21 and over.</span></label>
-      <label class="tick" id="f-emailOptIn"><input type="checkbox" name="emailOptIn"><span><b>Send me updates and early access from Apnay.</b> Unsubscribe anytime.</span></label>
-      <label class="tick" id="f-smsOptIn" hidden><input type="checkbox" name="smsOptIn"><span><b>Text or WhatsApp me updates from Apnay.</b> Msg &amp; data rates may apply. Reply STOP to opt out. Not required to sign up.</span></label>
+      <label class="tick" id="f-adult"><input type="checkbox" name="adult"><span><b data-i18n="adultB">I'm 21 or older.</b> <span data-i18n="adultRest">Apnay is for people 21 and over.</span></span></label>
+      <label class="tick" id="f-emailOptIn"><input type="checkbox" name="emailOptIn"><span><b data-i18n="emailB">Send me updates and early access from Apnay.</b> <span data-i18n="emailRest">Unsubscribe anytime.</span></span></label>
+      <label class="tick" id="f-smsOptIn" hidden><input type="checkbox" name="smsOptIn"><span><b data-i18n="smsB">Text or WhatsApp me updates from Apnay.</b> <span data-i18n="smsRest">Msg &amp; data rates may apply. Reply STOP to opt out. Not required to sign up.</span></span></label>
     </div>
 
     <label class="hp" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off"></label>
 
-    <button type="submit" class="btn">Sign up for launch updates</button>
+    <button type="submit" class="btn" data-i18n="submit">Sign up for launch updates</button>
     <p class="error" role="alert" aria-live="assertive" hidden></p>
-    <p class="fine">We never sell your details. <a href="privacy.html">How we use them</a></p>
+    <p class="fine"><span data-i18n="fine">We never sell your details.</span> <a href="privacy.html" data-i18n="fineLink">How we use them</a></p>
   </form>
 
   <section class="done" hidden tabindex="-1" aria-live="polite">
-    <a class="logo" href="/" aria-label="Apnay, making matches">
-      <span class="name" aria-hidden="true"><i>A</i><i>P</i><i>N</i><i>A</i><i>Y</i></span>
-      <span class="tag" aria-hidden="true">MAKING MATCHES</span>
-    </a>
-    <h1 class="done-title">You're on the list.</h1>
+    <div class="topbar">
+      <a class="logo" href="/" dir="ltr" aria-label="Apnay, making matches">
+        <span class="name" aria-hidden="true"><i>A</i><i>P</i><i>N</i><i>A</i><i>Y</i></span>
+        <span class="tag" aria-hidden="true">MAKING MATCHES</span>
+      </a>
+      <button type="button" class="lang-switch" aria-label="Change language"><span aria-hidden="true">🌐</span> <span class="lang-current">English</span></button>
+    </div>
+    <h1 class="done-title"></h1>
 
     <div class="inbox" hidden>
-      <p class="kicker">CHECK YOUR INBOX</p>
-      <p>We've sent a confirmation to <b class="inbox-email"></b>. Tap the link in it and you're in.</p>
-      <p class="small">Nothing there? Look in spam or promotions, or write to <a href="mailto:hello@apnay.app">hello@apnay.app</a>.</p>
+      <p class="kicker" data-i18n="inboxKicker">CHECK YOUR INBOX</p>
+      <p class="inbox-sent"></p>
+      <p class="small inbox-help"></p>
     </div>
 
     <div class="place" hidden>
-      <p>Your place in line</p>
-      <p class="num">#<span class="place-n"></span></p>
-      <p>of <span class="place-total"></span> on the waitlist</p>
+      <p data-i18n="placeLabel">Your place in line</p>
+      <p class="num" dir="ltr">#<span class="place-n"></span></p>
+      <p class="place-of"></p>
     </div>
 
     <div class="share" hidden>
-      <h2>Move up the list</h2>
-      <p class="muted">Every friend who joins with your link moves you up <b>5</b> places.</p>
-      <p class="link"><span class="share-url"></span></p>
+      <h2 data-i18n="moveUp">Move up the list</h2>
+      <p class="muted move-up-text"></p>
+      <p class="link" dir="ltr"><span class="share-url"></span></p>
       <div class="share-buttons">
-        <a class="btn wa" target="_blank" rel="noopener">Share on WhatsApp</a>
-        <button type="button" class="btn ghost copy">Copy link</button>
+        <a class="btn wa" target="_blank" rel="noopener" data-i18n="shareWa">Share on WhatsApp</a>
+        <button type="button" class="btn ghost copy" data-i18n="copy">Copy link</button>
       </div>
       <p class="friends"></p>
     </div>
 
-    <p class="muted follow">Until then, follow along at <a href="https://www.instagram.com/meetapnay" target="_blank" rel="noopener">@meetapnay</a> on Instagram and TikTok.</p>
+    <p class="muted follow"></p>
   </section>
 
-  <footer>
+  <footer hidden>
     <span>© 2026 Apnay</span>
-    <a href="privacy.html">Privacy note</a>
-    <a href="mailto:hello@apnay.app">hello@apnay.app</a>
+    <a href="privacy.html" data-i18n="privacyNote">Privacy note</a>
+    <a href="mailto:hello@apnay.app" dir="ltr">hello@apnay.app</a>
   </footer>
 </main>
 <script src="main.js" defer></script>

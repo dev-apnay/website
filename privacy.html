@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -9,35 +9,59 @@
 </head>
 <body>
 <main class="prose">
-  <a class="logo" href="/" aria-label="Apnay, making matches">
+  <a class="logo" href="/" dir="ltr" aria-label="Apnay, making matches">
     <span class="name" aria-hidden="true"><i>A</i><i>P</i><i>N</i><i>A</i><i>Y</i></span>
     <span class="tag" aria-hidden="true">MAKING MATCHES</span>
   </a>
-  <h1>Privacy note</h1>
-  <p>This note covers the Apnay waitlist at apnay.app. We never sell your details.</p>
+  <h1 data-i18n="pTitle">Privacy note</h1>
+  <p data-i18n="pIntro">This note covers the Apnay waitlist at apnay.app. We never sell your details.</p>
 
-  <h2>What we keep</h2>
+  <h2 data-i18n="pKeepH">What we keep</h2>
   <ul>
-    <li>Who you're signing up for, your first name, email, city, country, gender and age range.</li>
-    <li>Your phone or WhatsApp number, only if you give one.</li>
-    <li>That you confirmed you're 21 or older, and which updates you agreed to.</li>
-    <li>Your invite code, and the code of the friend whose link brought you, if any.</li>
+    <li data-i18n="pKeep1">Who you're signing up for, your first name, email, city, country, gender, age range and language.</li>
+    <li data-i18n="pKeep2">Your phone or WhatsApp number, only if you give one.</li>
+    <li data-i18n="pKeep3">That you confirmed you're 21 or older, and which updates you agreed to.</li>
+    <li data-i18n="pKeep4">Your invite code, and the code of the friend whose link brought you, if any.</li>
   </ul>
 
-  <h2>What we use it for</h2>
-  <p>To tell you about launch and early access, to keep your place in line, and to understand who is waiting for Apnay. We only text or WhatsApp you if you ticked that box, and you can reply STOP at any time. Every email has a way to unsubscribe.</p>
+  <h2 data-i18n="pUseH">What we use it for</h2>
+  <p data-i18n="pUse">To tell you about launch and early access, to keep your place in line, and to understand who is waiting for Apnay. We only text or WhatsApp you if you ticked that box, and you can reply STOP at any time. Every email has a way to unsubscribe.</p>
 
-  <h2>Who sees it</h2>
-  <p>Only the Apnay team. We don't share it with anyone else. This site sets no cookies and runs no trackers.</p>
+  <h2 data-i18n="pWhoH">Who sees it</h2>
+  <p data-i18n="pWho">Only the Apnay team. We don't share it with anyone else. This site sets no cookies and runs no trackers; it only remembers your chosen language on your device.</p>
 
-  <h2>Changing your mind</h2>
-  <p>To be taken off the list, or to see what we hold about you, write to <a href="mailto:hello@apnay.app">hello@apnay.app</a>.</p>
+  <h2 data-i18n="pChangeH">Changing your mind</h2>
+  <p class="p-change">To be taken off the list, or to see what we hold about you, write to <a href="mailto:hello@apnay.app" dir="ltr">hello@apnay.app</a>.</p>
+  <p class="muted p-english" hidden></p>
 
   <footer>
     <span>© 2026 Apnay</span>
-    <a href="/">Waitlist</a>
-    <a href="mailto:hello@apnay.app">hello@apnay.app</a>
+    <a href="/" data-i18n="pBack">Waitlist</a>
+    <a href="mailto:hello@apnay.app" dir="ltr">hello@apnay.app</a>
   </footer>
 </main>
+<script>
+// Shows the privacy note in the language chosen on the waitlist page.
+(async () => {
+  const RTL = ['ur', 'ar', 'pa-Arab', 'ps', 'fa'];
+  let code = new URLSearchParams(location.search).get('lang');
+  try { code = code || localStorage.getItem('apnay.lang'); } catch { /* private mode */ }
+  if (!code || code === 'en' || !/^[a-z]{2,3}(-[A-Za-z]{4})?$/.test(code)) return;
+  let d;
+  try { const r = await fetch(`i18n/${code}.json`); if (!r.ok) return; d = await r.json(); } catch { return; }
+  document.documentElement.lang = code;
+  document.documentElement.dir = RTL.includes(code) ? 'rtl' : 'ltr';
+  if (!['tr', 'ms', 'id', 'so', 'sw', 'ha', 'fr', 'es', 'de', 'bs', 'sq', 'ru'].includes(code)) document.documentElement.classList.add('nonlatin');
+  document.querySelectorAll('[data-i18n]').forEach((n) => { if (d[n.dataset.i18n]) n.textContent = d[n.dataset.i18n]; });
+  if (d.pTitle) document.title = `${d.pTitle} — Apnay`;
+  if (d.pChange) {
+    const p = document.querySelector('.p-change');
+    const link = p.querySelector('a');
+    const [before, after] = d.pChange.split('{mail}');
+    p.replaceChildren(document.createTextNode(before), link, document.createTextNode(after || ''));
+  }
+  if (d.pEnglish) { const e = document.querySelector('.p-english'); e.textContent = d.pEnglish; e.hidden = false; }
+})();
+</script>
 </body>
 </html>
