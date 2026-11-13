@@ -114,6 +114,7 @@ footer a { color: var(--grey); font-weight: 400; }
 
 /* Phones: the headline belongs to the form; later steps carry their own small top bar. */
 body[data-step] #top { display: none; }
+body[data-step] .check-place { display: none; }
 
 /* ---- DESKTOP, 960 px and wider (WL3l, WD1–WD5): a pink panel on the left with the logo and headline that stays on
    every step (only the line under the headline changes); each step's content in a column on the right. ---- */
@@ -134,9 +135,9 @@ body[data-step] #top { display: none; }
   form#join { margin-top: 0; padding-top: 64px; }
   form#join h2 { font-size: 22px; }
   .names { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
-  .done > .topbar, .about > .topbar, .unsubscribed > .topbar { display: none; }
-  .done, .about, .unsubscribed { padding-top: 64px; }
-  .done-title, .unsubscribed h1 { font-size: 36px; margin-top: 0; }
+  .done > .topbar, .about > .topbar, .unsubscribed > .topbar, .check > .topbar, .sent > .topbar { display: none; }
+  .done, .about, .unsubscribed, .check, .sent { padding-top: 64px; }
+  .done-title, .unsubscribed h1, .check h1, .sent h1 { font-size: 36px; margin-top: 0; }
   .about .confirmed-pill { margin-top: 0; }
   .about h1 { font-size: 32px; }
   footer { margin-top: 48px; padding-bottom: 40px; }
@@ -195,3 +196,15 @@ input::placeholder { color: #a39ca6; }
 .link-button { display: block; width: 100%; margin: 10px 0 0; padding: 8px; background: none; border: 0; color: var(--brand-deep); font: 600 15px var(--body); cursor: pointer; }
 .picture-note { text-align: center; margin: 6px 0 0 !important; }
 .unsubscribed h1 { margin-top: 28px; }
+
+/* ---- the way back in (WP11–WP13) ---- */
+.check-place { margin: 14px 0 0; color: var(--grey); font-size: 16px; }
+.check h1, .sent h1 { margin: 28px 0 14px; }
+.check .check-note { margin-bottom: 22px; font-size: 17px; }
+.check form { margin-top: 0; }
+.check .fine { margin-top: 22px; font-size: 15px; }
+.sent .inbox { margin-top: 8px; }
+.sent .try-another { width: auto; padding: 8px 0; text-align: start; }
+.done-title.welcome { font-size: clamp(28px, 8.2vw, 40px); }
+/* screens get focus when they open (for screen readers); no outline around the whole screen */
+section[tabindex="-1"]:focus { outline: none; }

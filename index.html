@@ -31,6 +31,7 @@
     <div class="hero">
       <h1><span data-i18n="h1a">Done swiping?</span> <em data-i18n="h1b">Ready for a real recommendation?</em></h1>
       <p class="lede" data-i18n="lede">Leave your details and you'll hear before anyone else.</p>
+      <p class="check-place"><span data-i18n="checkLine">Already signed up?</span> <a href="/?check" class="check-link" data-i18n="checkLink">Check your place</a></p>
       <p class="invited" hidden data-i18n="invited">A friend saved you a place</p>
       <p class="invited link-used" hidden data-i18n="linkUsed">This link has already been used. If you confirmed before, you're all set.</p>
     </div>
@@ -170,6 +171,40 @@
       <button type="submit" class="btn" data-i18n="saveContinue">Save and continue</button>
       <button type="button" class="btn ghost skip-about" data-i18n="skipForNow">Skip for now</button>
     </form>
+  </section>
+
+  <!-- WP11: the way back in -->
+  <section class="check" hidden tabindex="-1">
+    <div class="topbar">
+      <a class="logo" href="/" dir="ltr" aria-label="Apnay">
+        <span class="name" aria-hidden="true"><i>A</i><i>P</i><i>N</i><i>A</i><i>Y</i></span>
+      </a>
+    </div>
+    <h1 data-i18n="checkTitle">Check your place</h1>
+    <p class="muted check-note" data-i18n="checkText">Enter the email you signed up with. We'll send you your own link.</p>
+    <form id="checkForm" novalidate>
+      <label class="field" id="f-checkEmail"><span class="label" data-i18n="email">Email</span>
+        <input id="checkEmail" name="checkEmail" type="email" dir="ltr" autocomplete="email" inputmode="email" maxlength="254" placeholder="name@example.com"></label>
+      <button type="submit" class="btn" data-i18n="emailMeLink">Email me my link</button>
+      <p class="error check-error" role="alert" aria-live="assertive" hidden></p>
+    </form>
+    <p class="fine"><span data-i18n="notSignedUp">Not signed up yet?</span> <a href="/" data-i18n="joinLink">Join the waitlist</a></p>
+  </section>
+
+  <!-- WP12: link sent (the same answer whether or not the address is on the list) -->
+  <section class="sent" hidden tabindex="-1" aria-live="polite">
+    <div class="topbar">
+      <a class="logo" href="/" dir="ltr" aria-label="Apnay">
+        <span class="name" aria-hidden="true"><i>A</i><i>P</i><i>N</i><i>A</i><i>Y</i></span>
+      </a>
+    </div>
+    <h1 data-i18n="sentTitle">Check your inbox.</h1>
+    <div class="inbox">
+      <p class="kicker" data-i18n="sentKicker">YOUR LINK IS ON ITS WAY</p>
+      <p class="sent-text"></p>
+      <p class="small sent-help"></p>
+    </div>
+    <button type="button" class="link-button try-another" data-i18n="tryAnother">Try another email</button>
   </section>
 
   <!-- from the e-mail's Unsubscribe link -->

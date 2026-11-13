@@ -79,6 +79,16 @@ const EN = {
   follow: 'Until then, follow along at {handle} on Instagram and TikTok.',
   confirmedPill: "You're confirmed. You're on the list.",
   linkUsed: "This link has already been used. If you confirmed before, you're all set.",
+  // the way back in (WP11–WP13)
+  checkLine: 'Already signed up?', checkLink: 'Check your place',
+  checkTitle: 'Check your place', checkText: "Enter the email you signed up with. We'll send you your own link.",
+  emailMeLink: 'Email me my link', emailing: 'Sending…', notSignedUp: 'Not signed up yet?', joinLink: 'Join the waitlist',
+  sentTitle: 'Check your inbox.', sentKicker: 'YOUR LINK IS ON ITS WAY',
+  sentText: "If {email} is on the list, we've sent your link there. Tap it to see your place.",
+  sentHelp: 'Nothing there? Look in spam or promotions, or write to {mail}.', tryAnother: 'Try another email',
+  welcomeBack: 'Welcome back, {name}.', welcomeBackNoName: 'Welcome back.',
+  placeLinkBad: "That link didn't work. Enter the email you signed up with and we'll send you a new one.",
+  eTooMany: 'Too many requests from here. Please try again later.',
   aboutTitle: 'Would you like to tell us a little about them?',
   aboutText: "Completely optional. It helps us get things ready for the person you're signing up for. We don't ask for their name or contact details, and we never contact them.",
   theyAreMy: 'They are my', theirGender: 'Their gender', theirAgeRange: 'Their age range', whereTheyLive: 'Where do they live?',
@@ -400,7 +410,7 @@ function render() {
   const { body } = view;
   const status = body.status;
   const showAbout = Boolean(status && view.aboutKey && !body.confirmationSent);
-  [form, $('.unsubscribed')].forEach((n) => { n.hidden = true; });
+  [form, $('.unsubscribed'), $('.check'), $('.sent')].forEach((n) => { n.hidden = true; });
   step(showAbout ? 'about' : 'done',
     showAbout ? (view.via === 'confirm' ? 'ledeAboutConfirmed' : 'ledeAbout') : body.confirmationSent ? 'ledeInbox' : 'ledeDone');
   about.hidden = !showAbout;
@@ -456,7 +466,10 @@ function renderDone() {
   const { body, email } = view;
   const status = body.status;
   const number = new Intl.NumberFormat(lang === 'pa-Arab' ? 'ur' : lang);
-  $('.done-title').textContent = t(body.already ? 'already' : body.confirmationSent ? 'oneMore' : 'onList');
+  $('.done-title').classList.toggle('welcome', view.via === 'place');
+  $('.done-title').textContent = view.via === 'place'
+    ? (status && status.firstName ? t('welcomeBack').replace('{name}', status.firstName) : t('welcomeBackNoName'))
+    : t(body.already ? 'already' : body.confirmationSent ? 'oneMore' : 'onList');
 
   $('.inbox').hidden = !body.confirmationSent;
   if (body.confirmationSent) {
@@ -686,13 +699,90 @@ $('.share-picture').addEventListener('click', async () => {
 });
 $('.save-picture').addEventListener('click', async () => savePicture(await pictureFile()));
 
+// ---- the way back in: Check your place (WP11), link sent (WP12) ---------------------------------
+const checkForm = $('#checkForm');
+const checkError = $('.check-error');
+
+function showOnly(section) {
+  [form, done, about, $('.unsubscribed'), $('.check'), $('.sent')].forEach((n) => { n.hidden = n !== section; });
+  window.scrollTo(0, 0);
+}
+
+function showCheck(noteKey) {
+  showOnly($('.check'));
+  step('check', 'lede');
+  const note = $('.check-note');
+  note.dataset.i18n = noteKey || 'checkText';
+  note.textContent = t(note.dataset.i18n);
+  checkError.hidden = true;
+  $('#f-checkEmail').classList.remove('invalid');
+  $('.check').focus({ preventScroll: true });
+}
+
+$('.check-link').addEventListener('click', (e) => {
+  e.preventDefault();
+  try { history.pushState(null, '', '/?check'); } catch { /* sandboxed preview */ }
+  showCheck();
+});
+window.addEventListener('popstate', () => location.reload());
+
+checkForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = $('#checkEmail').value.trim();
+  const showProblem = (key) => {
+    checkError.textContent = t(key);
+    checkError.hidden = false;
+    $('#f-checkEmail').classList.toggle('invalid', key === 'eEmail');
+  };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return showProblem('eEmail');
+  const button = $('button', checkForm);
+  button.disabled = true;
+  button.textContent = t('emailing');
+  try {
+    const { ok, body } = await post('/link', { email });
+    if (!ok) return showProblem(body.message && body.message.startsWith('Too many') ? 'eTooMany' : body.message && body.message.startsWith('Enter a valid') ? 'eEmail' : 'eNetwork');
+    // the same answer whether or not the address is on the list
+    showOnly($('.sent'));
+    step('sent', 'lede');
+    fill($('.sent-text'), t('sentText'), { email: el('b', email, { dir: 'ltr' }) });
+    fill($('.sent-help'), t('sentHelp'), { mail: el('a', 'hello@apnay.app', { href: 'mailto:hello@apnay.app', dir: 'ltr' }) });
+    $('.sent').focus({ preventScroll: true });
+  } catch {
+    showProblem('eNetwork');
+  } finally {
+    button.disabled = false;
+    button.textContent = t('emailMeLink');
+  }
+});
+
+$('#checkEmail').addEventListener('input', () => {
+  checkError.hidden = true;
+  $('#f-checkEmail').classList.remove('invalid');
+});
+
+$('.try-another').addEventListener('click', () => {
+  $('#checkEmail').value = '';
+  showCheck();
+  $('#checkEmail').focus();
+});
+
 // ---- start: the form, or a link from the e-mail / your own link --------------------------------
 // The e-mail's keys each do one thing; neither stays in the address bar once used.
 async function start() {
   const confirm = (params.get('confirm') || '').trim();
   const unsubscribe = (params.get('unsubscribe') || '').trim();
+  const place = (params.get('place') || '').trim();
   if (params.has('me')) clearAddress(); // the old private links are retired
+  if (params.has('check')) { showCheck(); return; }
   try {
+    if (place) {
+      // See my place (WP13): opens any number of times; kept out of the address bar so it isn't shared by mistake
+      const { ok, body } = await post('/place', { token: place });
+      clearAddress();
+      if (ok && body.status) show(body, '', 'place');
+      else showCheck('placeLinkBad');
+      return;
+    }
     if (unsubscribe) {
       const { ok } = await post('/unsubscribe', { token: unsubscribe });
       clearAddress();
