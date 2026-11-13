@@ -521,20 +521,15 @@ function cardWords(status) {
   return { name, obj, place, city: status.city, savedLead, savedFor, number: status.place };
 }
 
-function logo(ctx, x, y, size, color, tagColor) {
+function logo(ctx, x, y, size, color) {
+  // APNAY in spaced letters, at a set width (4.79 × the letter size)
   ctx.fillStyle = color;
   ctx.font = `800 ${size}px ${DISPLAY}`;
   const letters = 'APNAY'.split('');
-  ctx.font = `600 ${size * 0.4}px ${BODY}`;
-  const tagWidth = ctx.measureText('MAKING MATCHES').width + size * 0.4 * 0.24 * 13;
-  ctx.font = `800 ${size}px ${DISPLAY}`;
-  const gap = (tagWidth - letters.reduce((w, l) => w + ctx.measureText(l).width, 0)) / (letters.length - 1);
+  const logoWidth = size * 4.79;
+  const gap = (logoWidth - letters.reduce((w, l) => w + ctx.measureText(l).width, 0)) / (letters.length - 1);
   let cx = x;
   letters.forEach((l) => { ctx.fillText(l, cx, y); cx += ctx.measureText(l).width + gap; });
-  ctx.fillStyle = tagColor;
-  ctx.font = `600 ${size * 0.4}px ${BODY}`;
-  let tx = x;
-  [...'MAKING MATCHES'].forEach((ch) => { ctx.fillText(ch, tx, y + size * 0.62); tx += ctx.measureText(ch).width + size * 0.4 * 0.24; });
 }
 
 /** Writes wrapped text; returns the y below the last line. */
@@ -589,7 +584,7 @@ function drawCard(kind, w) {
     ctx.fillStyle = C.tint; ctx.fillRect(0, 0, 1080, 1080);
     ctx.fillStyle = C.pink; ctx.beginPath(); ctx.arc(1010, 70, 260, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = C.white; ctx.beginPath(); ctx.arc(880, 250, 34, 0, Math.PI * 2); ctx.fill();
-    logo(ctx, M, 150, 64, C.pink, C.grey);
+    logo(ctx, M, 150, 64, C.pink);
     const subline = 'Ready for a real recommendation? Save a place for someone you love.';
     ctx.font = `800 96px ${DISPLAY}`;
     const headLines = countLines(ctx, `${w.savedLead}${w.savedFor}`, 860);
@@ -604,7 +599,7 @@ function drawCard(kind, w) {
     ctx.fillStyle = C.pink; ctx.font = `600 36px ${BODY}`; ctx.fillText('apnay.app', M, 1000);
   } else if (kind === 1) { // dark: early access pass
     ctx.fillStyle = C.night; ctx.fillRect(0, 0, 1080, 1080);
-    logo(ctx, M, 150, 64, C.pink, '#a79fa9');
+    logo(ctx, M, 150, 64, C.pink);
     ctx.fillStyle = C.white; roundRect(ctx, M, 300, 912, 480, 36); ctx.fill();
     ctx.fillStyle = C.pink; roundRect(ctx, 700, 340, 236, 400, 28); ctx.fill();
     ctx.fillStyle = C.white; ctx.textAlign = 'center';
@@ -620,7 +615,7 @@ function drawCard(kind, w) {
     ctx.fillStyle = C.pink; ctx.font = `600 36px ${BODY}`; ctx.textAlign = 'right'; ctx.fillText('apnay.app', 1080 - M, 980); ctx.textAlign = 'left';
   } else if (kind === 2) { // pink: talking stage / the real thing
     ctx.fillStyle = C.pink; ctx.fillRect(0, 0, 1080, 1080);
-    logo(ctx, M, 150, 64, C.white, 'rgba(255,255,255,.75)');
+    logo(ctx, M, 150, 64, C.white);
     ctx.font = `800 104px ${DISPLAY}`;
     ctx.fillStyle = 'rgba(255,255,255,.62)'; ctx.fillText('Talking stage.', M, 560);
     const strike = ctx.measureText('Talking stage.').width;
@@ -631,7 +626,7 @@ function drawCard(kind, w) {
     ctx.font = `600 36px ${BODY}`; ctx.fillText(`Join ${w.obj} → apnay.app`, M, 1000);
   } else { // pink: big place number
     ctx.fillStyle = C.pink; ctx.fillRect(0, 0, 1080, 1080);
-    logo(ctx, M, 150, 64, C.white, 'rgba(255,255,255,.75)');
+    logo(ctx, M, 150, 64, C.white);
     ctx.fillStyle = C.white; ctx.font = `800 ${w.number > 99999 ? 200 : 260}px ${DISPLAY}`; ctx.fillText(`#${w.number}`, M - 8, 600);
     ctx.font = `800 64px ${DISPLAY}`; let y = wrap(ctx, `${w.name} is on the list.`, M, 700, 900, 72);
     ctx.font = `400 36px ${BODY}`; wrap(ctx, 'Done swiping? Ready for a real recommendation?', M, y + 10, 860, 50);
