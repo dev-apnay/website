@@ -328,6 +328,14 @@ const SERVER_ERRORS = {
   "Tick the box to confirm you're 21 or older.": ['f-adult', 'eAdult'],
   "Tick the box so we can email you — that's how you'll hear about launch.": ['f-emailOptIn', 'eEmailOptIn'],
   'Too many sign-ups from here. Please try again later.': [null, 'eBusy'],
+  "Choose who you're signing up for.": ['f-who', 'eWho'],
+  'Enter your first name.': ['f-firstName', 'eFirst'],
+  'Enter your last name.': ['f-lastName', 'eLast'],
+  'Choose your country.': ['f-country', 'eCountry'],
+  'Choose your state.': ['f-state', 'eState'],
+  'Enter your city.': ['f-city', 'eCity'],
+  'Choose Male or Female.': ['f-gender', 'eGender'],
+  'Choose your age range.': ['f-ageRange', 'eAge'],
 };
 
 async function post(path, body) {
