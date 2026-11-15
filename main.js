@@ -524,7 +524,7 @@ $('.copy').addEventListener('click', async (e) => {
 });
 
 // ---- share pictures: 1080×1080 cards (four for someone you care about, three for yourself) made from the person's own details --------------------
-const C = { pink: '#FF2D78', deep: '#c4185a', tint: '#FFF0F5', ink: '#17171A', grey: '#6b6670', white: '#ffffff', night: '#1c1a1f' };
+const C = { pink: '#c92881', deep: '#c4185a', tint: '#FFF0F5', ink: '#17171A', grey: '#6b6670', white: '#ffffff', night: '#1c1a1f' };
 const DISPLAY = '"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif';
 const BODY = '"DM Sans", -apple-system, "Segoe UI", system-ui, sans-serif';
 let canvases = [];
