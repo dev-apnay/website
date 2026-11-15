@@ -208,3 +208,14 @@ input::placeholder { color: #a39ca6; }
 .done-title.welcome { font-size: clamp(28px, 8.2vw, 40px); }
 /* screens get focus when they open (for screen readers); no outline around the whole screen */
 section[tabindex="-1"]:focus { outline: none; }
+
+/* Language switcher (globe + language name), shown from day one. English only for now. */
+body { position: relative; }
+.lang { position: absolute; top: 26px; right: 20px; z-index: 5; display: inline-flex; align-items: center; gap: 7px; height: 36px; min-height: 0; width: auto; padding: 0 12px 0 10px; border: 1.5px solid var(--line); border-radius: 999px; background: #fff; font: 600 14px/1 var(--body); color: var(--ink); cursor: pointer; }
+.lang svg { width: 17px; height: 17px; flex: none; }
+.lang .car { width: 8px; height: 8px; border-right: 1.5px solid var(--grey); border-bottom: 1.5px solid var(--grey); transform: rotate(45deg) translateY(-2px); margin-left: 2px; }
+.lang-menu { position: absolute; top: 68px; right: 20px; z-index: 6; background: #fff; border: 1.5px solid var(--line); border-radius: 16px; padding: 6px; display: flex; flex-direction: column; min-width: 210px; box-shadow: 0 8px 24px rgba(23,23,26,.08); }
+.lang-menu div { display: flex; justify-content: space-between; gap: 16px; padding: 11px 12px; border-radius: 10px; font-size: 15px; }
+.lang-menu .on { background: var(--tint); color: var(--brand-deep); font-weight: 600; }
+.lang-menu .more { color: var(--grey); font-size: 13px; }
+@media (min-width: 960px) { .lang { top: 40px; right: 48px; } .lang-menu { top: 84px; right: 48px; } }

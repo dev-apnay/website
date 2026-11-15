@@ -818,3 +818,13 @@ async function start() {
   buildStates();
   start();
 })();
+
+// Language switcher: English only for now; the menu says more are coming.
+(function () {
+  const btn = document.getElementById('langBtn'); const menu = document.getElementById('langMenu');
+  if (!btn || !menu) return;
+  const set = (open) => { menu.hidden = !open; btn.setAttribute('aria-expanded', String(open)); };
+  btn.addEventListener('click', (e) => { e.stopPropagation(); set(menu.hidden); });
+  document.addEventListener('click', (e) => { if (!menu.contains(e.target)) set(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
+})();
