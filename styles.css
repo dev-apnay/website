@@ -135,6 +135,7 @@ body[data-step] .check-place { display: none; }
   form#join { margin-top: 0; padding-top: 64px; }
   form#join h2 { font-size: 22px; }
   .names { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+  #top .check-place { font-size: 14px; margin-top: 16px; } /* WD1: smaller than the line above */
   .done > .topbar, .about > .topbar, .unsubscribed > .topbar, .check > .topbar, .sent > .topbar { display: none; }
   .done, .about, .unsubscribed, .check, .sent { padding-top: 64px; }
   .done-title, .unsubscribed h1, .check h1, .sent h1 { font-size: 36px; margin-top: 0; }

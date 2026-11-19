@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Privacy note — Apnay</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=1114c">
+  <link rel="stylesheet" href="styles.css?v=1119c">
 </head>
 <body>
+<button class="lang" id="langBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.7 5.6 3.7 9s-1.2 6.4-3.7 9c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3z"/></svg><span>English</span><span class="car" aria-hidden="true"></span></button>
+<div class="lang-menu" id="langMenu" hidden><div class="on">English <span aria-hidden="true">✓</span></div><div class="more">More languages are coming</div></div>
 <main class="prose">
   <a class="logo" href="/" dir="ltr" aria-label="Apnay">
     <span class="name" aria-hidden="true"><i>A</i><i>P</i><i>N</i><i>A</i><i>Y</i></span>
@@ -64,6 +66,17 @@ const TRANSLATIONS_ON = false;
     p.replaceChildren(document.createTextNode(before), link, document.createTextNode(after || ''));
   }
   if (d.pEnglish) { const e = document.querySelector('.p-english'); e.textContent = d.pEnglish; e.hidden = false; }
+})();
+</script>
+<script>
+// Language switcher: English only for now; the menu says more are coming.
+(function () {
+  const btn = document.getElementById('langBtn'); const menu = document.getElementById('langMenu');
+  if (!btn || !menu) return;
+  const set = (open) => { menu.hidden = !open; btn.setAttribute('aria-expanded', String(open)); };
+  btn.addEventListener('click', (e) => { e.stopPropagation(); set(menu.hidden); });
+  document.addEventListener('click', (e) => { if (!menu.contains(e.target)) set(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
 })();
 </script>
 </body>

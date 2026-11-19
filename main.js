@@ -45,6 +45,7 @@ const EN = {
   ledeAboutConfirmed: "You're confirmed. One last question, and it's optional.",
   ledeAbout: "You're on the list. One last question, and it's optional.",
   ledeDone: "You're on the list. Share your link to move up.",
+  ledeCheck: 'Already signed up? See where you are in line.', ledeSent: 'Your link is on its way.', // WD6, WD7
   formTitle: 'Join the waitlist', whoLegend: 'Who are you signing up for?',
   self: 'Myself', selfSub: "I'm looking to get married.", family: 'Someone I care about', familySub: 'A son, daughter, sister, friend…',
   firstName: 'First name', lastName: 'Last name', email: 'Email', phone: 'Phone or WhatsApp', optional: '(optional)', code: 'Code',
@@ -718,7 +719,7 @@ function showOnly(section) {
 
 function showCheck(noteKey) {
   showOnly($('.check'));
-  step('check', 'lede');
+  step('check', 'ledeCheck');
   const note = $('.check-note');
   note.dataset.i18n = noteKey || 'checkText';
   note.textContent = t(note.dataset.i18n);
@@ -751,7 +752,7 @@ checkForm.addEventListener('submit', async (e) => {
     if (!ok) return showProblem(body.message && body.message.startsWith('Too many') ? 'eTooMany' : body.message && body.message.startsWith('Enter a valid') ? 'eEmail' : 'eNetwork');
     // the same answer whether or not the address is on the list
     showOnly($('.sent'));
-    step('sent', 'lede');
+    step('sent', 'ledeSent');
     fill($('.sent-text'), t('sentText'), { email: el('b', email, { dir: 'ltr' }) });
     fill($('.sent-help'), t('sentHelp'), { mail: el('a', 'hello@apnay.app', { href: 'mailto:hello@apnay.app', dir: 'ltr' }) });
     $('.sent').focus({ preventScroll: true });
